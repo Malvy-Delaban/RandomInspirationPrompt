@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epic Prompt Generator</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .left, .right {
+            flex: 1;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            border: 1px solid #424242;
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+
+        h2 {
+            color: #f5f5f5;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        b {
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+        span {
+            color: #cfcfcf;
+            font-size: 18px;
+            display: inline-block;
+            opacity: 0;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+
+        button {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #0d47a1;
+            transform: translateY(1px);
+        }
+
+        .prompt {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            color: #b0bec5;
+            border: 1px solid #424242;
+            max-width: 600px;
+            margin-top: 20px;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            text-align: justify;
+        }
+
+        a {
+            color: #29b6f6;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .instructions {
+            font-size: 14px;
+            color: #9e9e9e;
+            margin-top: 10px;
+        }
+
+        .link {
+            font-size: 12px;
+            color: #29b6f6;
+            text-decoration: none;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        /* Animation classes */
+        .show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <h2>Here is your inspiration :</h2>
+            <b>Architectural style:</b> <span class="archi"></span>
+            <b>Architectural variation:</b> <span class="archi-var"></span>
+            <b>Main (or ground) color:</b> <span class="main-color"></span>
+            <b>Secondary (or sky) color:</b> <span class="secondary-color"></span>
+            <b>Location:</b> <span class="location"></span>
+            <b>Sky style:</b> <span class="sky-style"></span>
+            <button onClick="GenerateSetting()">Generate</button>
+        </div>
+        <div class="right">
+            <b>Prompt:</b>
+            <span class="prompt"></span>
+            <div class="instructions">
+                <div><b>To use stable diffusion:</b></div>
+                <a class="link" href="https://www.youtube.com/watch?v=6MeJKnbv1ts&ab_channel=RoyalSkies" target="_blank">Watch this tutorial</a>
+                <div>This is free, don't be a fool</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const architecturalStyles = [
+            "Ancient Egyptian", "Mesopotamian", "Ancient Greek", "Roman", "Byzantine", "Romanesque", "Gothic",
+            "Renaissance", "Baroque", "Rococo", "Neoclassical", "Vernacular", "Islamic", "Indian", "Traditional Chinese",
+            "Traditional Japanese", "Pre-Columbian", "Mayan", "Gothic-Mudéjar", "Medieval"
+        ];
+        const architecturalVariations = [
+            "in ruins", "covered with vegetation", "abandoned", "restored", "modernized", "partially demolished",
+            "under construction", "painted with murals", "flooded", "fire-damaged", "buried underground", "encased in glass",
+        ];
+        const colors = [
+            "Cerulean Blue", "Burnt Sienna", "Alizarin Crimson", "Cadmium Yellow", "Prussian Blue", "Ultramarine",
+            "Viridian Green", "Payne's Gray", "Venetian Red", "Raw Umber", "Phthalo Blue", "Indian Yellow",
+            "Cobalt Blue", "Emerald Green", "Naples Yellow", "Titanium White", "Ivory Black", "Ochre Yellow",
+            "Terra Cotta", "Magenta", "Chartreuse", "Aubergine", "Saffron", "Coral Pink", "Teal", "Burgundy",
+            "Salmon", "Slate Gray", "Lavender", "Turquoise", "Peach", "Mustard", "Rosewood", "Charcoal", "Jade",
+            "Carmine", "Amethyst", "Copper", "Olive Drab", "Mint Green", "Marigold", "Blush", "Indigo", "Periwinkle",
+            "Plum", "Crimson", "Pewter", "Ochre", "Taupe"
+        ];
+        const skyStyles = [
+            "Clear", "Partly Cloudy", "Overcast", "Stormy", "Thunderstorm", "Cloudy", "Rainy", "Snowy", "Foggy", "Hazy",
+            "Sunny", "Twilight", "Dusk", "Dawn", "Night", "Starry", "Misty", "Aurora Borealis", "Sunset", "Sunrise",
+            "Windy", "Lightning", "Cyclonic", "Drizzling", "Rainbow", "Moonlit", "Scattered Clouds", "Smoky", "Dusty",
+            "Humid", "Turbulent", "Calm", "Meteor Shower", "Gloomy", "Tropical", "Blizzard", "Chilly", "Breezy", "Frigid"
+        ];
+        const locations = [
+            "Tundra", "Desert", "Mountains", "Forest", "Jungle", "Savannah", "Arctic", "Urban Cityscape", "Village",
+            "Countryside", "Beach", "Island", "Cave", "Riverbank", "Lake", "Ocean", "Swamp", "Canyon", "Waterfall",
+            "Plateau", "Glacier", "Volcano", "Steppe", "Marsh", "Cliffside", "Rainforest", "Meadow", "Prairie", "Delta",
+            "Wetland", "Foothills", "Gorge", "Badlands", "Underground", "Oasis", "Coral Reef", "Fjord", "Harbor",
+            "Dockyard", "Enchanted Forest", "Space Station", "Moon Base", "Mars Colony", "Underwater City", "Floating Island",
+            "Ghost Town", "Market Square", "Catacombs", "Dungeon", "Medieval Town", "Renaissance Square", "Victorian Street",
+            "Steampunk City", "Cyberpunk Metropolis", "Fantasy Realm", "Spaceport", "Lighthouse", "Observatory",
+            "Skyscraper Rooftop", "Train Station", "Aqueduct", "Arboretum", "Hillside Village", "Floating Market",
+            "Aquatic Dome", "Secluded Monastery", "Mountain Pass", "Zen Garden", "Alpine Resort", "Carnival", "Opera House",
+            "Amphitheater", "Botanical Garden", "Open Fields", "Sunny Meadow", "Moonlit Clearing", "Highland Plateau",
+            "Underground Lair", "Desert Oasis", "Cultural Heritage Site", "Windswept Dunes", "Crystalline Caverns",
+            "Bamboo Grove", "Magical Academy", "Dragon's Lair"
+        ];
+
+        function getRandomFromArray(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generatePrompt(style, variation, mainColor, secondaryColor, place, sky) {
+            return `Envision a majestic ${style} building, ${variation}, situated in a ${place}. The structure exhibits a captivating ${mainColor} facade, contrasted against a dramatic ${secondaryColor} sky. The scene is enhanced by a ${sky} atmosphere, making the architecture stand out vividly against its ${place} backdrop.`;
+        }
+
+        function showResults() {
+            const elements = document.querySelectorAll('.archi, .archi-var, .main-color, .secondary-color, .location, .sky-style, .prompt');
+            elements.forEach(el => {
+                el.classList.remove('show');
+                void el.offsetWidth; // Force reflow to restart animation
+                el.classList.add('show');
+            });
+        }
+
+        function GenerateSetting() {
+            const architecturalStyle = getRandomFromArray(architecturalStyles);
+            const architecturalVariation = getRandomFromArray(architecturalVariations);
+            const mainColor = getRandomFromArray(colors);
+            const secondaryColor = getRandomFromArray(colors);
+            const place = getRandomFromArray(locations);
+            const skyStyle = getRandomFromArray(skyStyles);
+            const prompt = generatePrompt(architecturalStyle, architecturalVariation, mainColor, secondaryColor, place, skyStyle);
+
+            document.querySelector('.archi').innerHTML = architecturalStyle;
+            document.querySelector('.archi-var').innerHTML = architecturalVariation;
+            document.querySelector('.main-color').innerHTML = mainColor;
+            document.querySelector('.secondary-color').innerHTML = secondaryColor;
+            document.querySelector('.location').innerHTML = place;
+            document.querySelector('.sky-style').innerHTML = skyStyle;
+            document.querySelector('.prompt').innerHTML = prompt;
+
+            showResults();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            GenerateSetting();
+        });
+    </script>
+</body>
+
+</html>
