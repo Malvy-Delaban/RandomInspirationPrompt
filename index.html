@@ -67,7 +67,28 @@
             transition: opacity 1s ease-in-out, transform 1s ease-in-out;
         }
 
-        button {
+        .secondary-button {
+            background-color: #424242;
+            color: #ffffff;
+            border: 1px solid #757575;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+
+        .secondary-button:hover {
+            background-color: #616161;
+        }
+
+        .secondary-button:active {
+            background-color: #757575;
+            transform: scale(0.95); 
+        }
+
+        .cta-button {
             background-color: #1e88e5;
             color: white;
             border: none;
@@ -79,12 +100,12 @@
             margin-top: 20px;
         }
 
-        button:hover {
+        .cta-button:hover {
             background-color: #1565c0;
             transform: translateY(-2px);
         }
 
-        button:active {
+        .cta-button:active {
             background-color: #0d47a1;
             transform: translateY(1px);
         }
@@ -133,10 +154,23 @@
             text-decoration: underline;
         }
 
-        /* Animation classes */
         .show {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        #popup {
+            visibility: hidden;
+            position: fixed;
+            top: 8%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            opacity: 1;
+            transition: opacity 1s ease-out;
         }
     </style>
 </head>
@@ -151,18 +185,24 @@
             <b>Secondary (or sky) color:</b> <span class="secondary-color"></span>
             <b>Location:</b> <span class="location"></span>
             <b>Sky style:</b> <span class="sky-style"></span>
-            <button onClick="GenerateSetting()">Generate</button>
+            <button class="cta-button" onClick="GenerateSetting()">Generate</button>
         </div>
         <div class="right">
-            <b>Prompt:</b>
-            <span class="prompt"></span>
+            <b>Prompt:</b><div>
+                <span class="prompt" id="prompt"></span>
+                <button class="secondary-button" onClick="CopyPrompt()">Copy</button>
+            </div>
             <div class="instructions">
-                <div><b>To use stable diffusion:</b></div>
-                <a class="link" href="https://www.youtube.com/watch?v=6MeJKnbv1ts&ab_channel=RoyalSkies" target="_blank">Watch this tutorial</a>
-                <div>This is free, don't be a fool</div>
+                <div><b>To use stable diffusion locally:</b></div>
+                <a class="link" href="https://www.youtube.com/watch?v=i5hvZvzcxoo&ab_channel=RoyalSkies" target="_blank">Watch this tutorial</a>
+                <div>This is free, don't be a fool</div><br><br>
+                <div><b>Personal link for my own use:</b></div>
+                <a class="link" href="http://192.168.1.104:8800/" target="_blank">Local Stable Diffusion</a>
             </div>
         </div>
     </div>
+
+    <div id="popup">default popup</div>
 
     <script>
         const architecturalStyles = [
@@ -204,12 +244,25 @@
             "Bamboo Grove", "Magical Academy", "Dragon's Lair"
         ];
 
+        function showPopup(textToDisplay) {
+            var popup = document.getElementById('popup');
+            popup.innerHTML = textToDisplay;
+            popup.style.visibility = 'visible';
+            setTimeout(function() {
+                popup.style.opacity = '0';
+                setTimeout(function() {
+                    popup.style.visibility = 'hidden';
+                    popup.style.opacity = '1'; // reset opacity for next use
+                }, 1000); // match the transition duration
+            }, 3000);
+        }
+
         function getRandomFromArray(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
         function generatePrompt(style, variation, mainColor, secondaryColor, place, sky) {
-            return `Envision a majestic ${style} building, ${variation}, situated in a ${place}. The structure exhibits a captivating ${mainColor} facade, contrasted against a dramatic ${secondaryColor} sky. The scene is enhanced by a ${sky} atmosphere, making the architecture stand out vividly against its ${place} backdrop.`;
+            return `Realistic, photorealistism, hd, high quality, ${style} building, ${variation}, ${place} background, ${mainColor} facade, ${secondaryColor} sky, ${sky}`;
         }
 
         function showResults() {
@@ -239,6 +292,12 @@
             document.querySelector('.prompt').innerHTML = prompt;
 
             showResults();
+        }
+
+        function CopyPrompt() {
+            var copyText = document.getElementById("prompt");
+            navigator.clipboard.writeText(copyText.innerHTML);
+            showPopup("Text copied to clipboard");
         }
 
         document.addEventListener('DOMContentLoaded', () => {
