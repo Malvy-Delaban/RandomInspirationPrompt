@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Epic Prompt Generator</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+
     <style>
         body {
             background-color: #121212;
@@ -172,6 +174,15 @@
             opacity: 1;
             transition: opacity 1s ease-out;
         }
+
+        .material-icons {
+            margin-left: 1rem;
+            font-size: 1rem;
+        }
+
+        .material-icons:hover {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -205,11 +216,9 @@
     <div id="popup">default popup</div>
 
     <script>
-        const architecturalStyles = [
-            "Ancient Egyptian", "Mesopotamian", "Ancient Greek", "Roman", "Byzantine", "Romanesque", "Gothic",
-            "Renaissance", "Baroque", "Rococo", "Neoclassical", "Vernacular", "Islamic", "Indian", "Traditional Chinese",
-            "Traditional Japanese", "Pre-Columbian", "Mayan", "Gothic-Mudéjar", "Medieval"
-        ];
+        
+        const architecturalStyles = ["Baroque", "Bauhaus", "Beaux-Arts", "Brutalist", "Byzantine", "Classical", "Colonial", "Contemporary", "Deconstructivism", "Edwardian", "Elizabethan", "Expressionism", "Federal", "Futurism", "Georgian", "Gothic", "Greek Revival", "International", "Islamic", "Italianate", "Mannerism", "Mid-Century Modern", "Modern", "Neoclassical", "Postmodern", "Prairie", "Queen Anne", "Renaissance", "Rococo", "Romanesque", "Tudor", "Victorian", "Art Deco", "Art Nouveau", "Arts and Crafts", "Baroque Revival", "Chalet", "Chateauesque", "Chicago School", "Chinese", "Constructivism", "Cottage", "Craftsman", "Cubic", "Dutch Colonial", "Early American", "Eclecticism", "Federal Colonial", "Googie", "Industrial", "Italian Renaissance", "Japanese", "Minimalism", "Mission Revival", "Neo-Byzantine", "Neo-Gothic", "Neo-Renaissance", "Organic", "Palladian", "Richardsonian Romanesque", "Russian Revival", "Shingle", "Spanish Colonial Revival", "Streamline Moderne", "Structural Expressionism", "Swiss Chalet", "Traditional", "Tropical Modernism", "Vernacular", "Victorian Gothic", "Wrightian"];
+
         const architecturalVariations = [
             "in ruins", "covered with vegetation", "abandoned", "restored", "modernized", "partially demolished",
             "under construction", "painted with murals", "flooded", "fire-damaged", "buried underground", "encased in glass",
@@ -283,12 +292,12 @@
             const skyStyle = getRandomFromArray(skyStyles);
             const prompt = generatePrompt(architecturalStyle, architecturalVariation, mainColor, secondaryColor, place, skyStyle);
 
-            document.querySelector('.archi').innerHTML = architecturalStyle;
-            document.querySelector('.archi-var').innerHTML = architecturalVariation;
-            document.querySelector('.main-color').innerHTML = mainColor;
-            document.querySelector('.secondary-color').innerHTML = secondaryColor;
-            document.querySelector('.location').innerHTML = place;
-            document.querySelector('.sky-style').innerHTML = skyStyle;
+            document.querySelector('.archi').innerHTML = architecturalStyle + '<i class="material-icons" onclick="OpenTabSearch(\'' + architecturalStyle + ' style building\')">info</i>';
+            document.querySelector('.archi-var').innerHTML = architecturalVariation + '<i class="material-icons" onclick="OpenTabSearch(\'' + architecturalVariation + ' building\')">info</i>';
+            document.querySelector('.main-color').innerHTML = mainColor + '<i class="material-icons" onclick="OpenTabSearch(\'' + mainColor + ' color\')">info</i>';
+            document.querySelector('.secondary-color').innerHTML = secondaryColor + '<i class="material-icons" onclick="OpenTabSearch(\'' + secondaryColor + ' color\')">info</i>';
+            document.querySelector('.location').innerHTML = place + '<i class="material-icons" onclick="OpenTabSearch(\'' + place + '\')">info</i>';
+            document.querySelector('.sky-style').innerHTML = skyStyle + '<i class="material-icons" onclick="OpenTabSearch(\'' + skyStyle + ' sky\')">info</i>';
             document.querySelector('.prompt').innerHTML = prompt;
 
             showResults();
@@ -298,6 +307,12 @@
             var copyText = document.getElementById("prompt");
             navigator.clipboard.writeText(copyText.innerHTML);
             showPopup("Text copied to clipboard");
+        }
+
+        function OpenTabSearch(textToSearch) {
+            const baseUrl = "https://www.google.com/search?tbm=isch&q=";
+            const searchUrl = baseUrl + textToSearch;
+            window.open(searchUrl, '_blank');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
